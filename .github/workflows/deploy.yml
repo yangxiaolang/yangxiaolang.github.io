@@ -17,5 +17,4 @@ jobs:
           deploykey: ${{secrets.DEPLOY_KEY}}
           username: yangxiaolang
           email: 1810849666@qq.com
-          github_page_repository: https://github.com/yangxiaolang/yangxiaolang.github.io
           github_page_repository_branch: gh-pages
