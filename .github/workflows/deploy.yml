@@ -1,2 +1,27 @@
-- name: Hexo Action
-  uses: sma11black/hexo-action@v1.0.4
+name: Build and Deploy
+on:
+  push:	
+    branches:	
+      - master
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout
+      uses: actions/checkout@master
+      with:
+        submodules: true
+
+    - name: Hexo Action
+      uses: sma11black/hexo-action@v1.0.4
+      # env:
+      #   PERSONAL_TOKEN: ${{ secrets.ACCESS_TOKEN }}
+      #   PUBLISH_REPOSITORY: yangxiaolang/yangxiaolang.github.io # The repository the action should deploy to.
+      #   BRANCH: gh-pages  # The branch the action should deploy to.
+      #   PUBLISH_DIR: ./public # The folder the action should deploy.
+      with:
+        deploy_key: ${{ secrets.DEPLOY_KEY }}
+        user_name: yangxiaolang  # (or delete this input setting to use bot account)
+        user_email: 1810849666@qq.com  # (or delete this input setting to use bot account)
+        # commit_msg: ${{ github.event.head_commit.message }}  # (or delete this input setting to use hexo default settings)
+
