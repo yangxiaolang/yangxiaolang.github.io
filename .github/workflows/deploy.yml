@@ -17,4 +17,3 @@ jobs:
           deploykey: ${{secrets.DEPLOY_KEY}}
           username: yangxiaolang
           email: 1810849666@qq.com
-          branch: gh-pages
