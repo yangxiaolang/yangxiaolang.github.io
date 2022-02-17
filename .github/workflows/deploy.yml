@@ -1,48 +1,58 @@
-name: GitHub Actions Build and Deploy
+name: CI
+
 on:
   push:
     branches:
-
       - master
 
+env:
+  GIT_USER: yangxiaolang
+  GIT_EMAIL: 1810849666@qq.com
+  DEPLOY_REPO: yangxiaolang/yangxiaolang.github.io
+  DEPLOY_BRANCH: gh-pages
+
 jobs:
-  build-and-deploy:
+  build:
+    name: Build on node ${{ matrix.node_version }} and ${{ matrix.os }}
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        os: [ubuntu-latest]
+        node_version: [12.x]
+
     steps:
+      - name: Checkout
+        uses: actions/checkout@v2
 
-    - name: 1. git checkout...
+      - name: Checkout deploy repo
+        uses: actions/checkout@v2
+        with:
+          repository: ${{ env.DEPLOY_REPO }}
+          ref: ${{ env.DEPLOY_BRANCH }}
+          path: .deploy_git
 
-      uses: actions/checkout@v1
+      - name: Use Node.js ${{ matrix.node_version }}
+        uses: actions/setup-node@v1
+        with:
+          node-version: ${{ matrix.node_version }}
 
-    - name: 2. setup nodejs...
+      - name: Configuration environment
+        env:
+          HEXO_DEPLOY_PRI: ${{secrets.Deploy_Token}}
+        run: |
+          sudo timedatectl set-timezone "Asia/Shanghai"
+          mkdir -p ~/.ssh/
+          echo "$HEXO_DEPLOY_PRI" > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+          ssh-keyscan github.com >> ~/.ssh/known_hosts
+          git config --global user.name $GIT_USER
+          git config --global user.email $GIT_EMAIL
+          cp _config.theme.yml themes/concise/_config.yml
 
-      uses: actions/setup-node@v1
+      - name: Install dependencies
+        run: |
+          npm install
 
-    - name: 3. install hexo...
-
-      run: |
-        npm install hexo-cli -g
-        npm i -S hexo-prism-plugin -g
-        npm install hexo-generator-search --save -g
-        npm i hexo-permalink-pinyin  -g
-        npm i --save hexo-wordcount -g
-        npm install hexo-filter-github-emojis  -g
-        npm install hexo-generator-feed  -g
-        npm install
-
-    - name: 4. hexo generate public files...
-
-      run: |
-        hexo clean
-        hexo g
-    
-    # 提交到我们的存放静态资源的仓库
-
-    - name: Build and Deploy
-
-      uses: y4code/hexo-deploy-action@master
-      env:
-        PERSONAL_TOKEN: ${{ secrets.Deploy_Token }}
-        PUBLISH_REPOSITORY: yangxiaolang/yangxiaolang.github.io # The repository the action should deploy to.
-        BRANCH: gh-pages  # The branch the action should deploy to.
-        PUBLISH_DIR: ./public # The folder the action should deploy.
+      - name: Deploy hexo
+        run: |
+          npm run deploy
