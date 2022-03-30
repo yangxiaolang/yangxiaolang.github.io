@@ -8,7 +8,7 @@ subtitle: ''
 description: ''
 keywords:
 author: Mr.lang
-language: zh-cn
+language: zh-CN
 timezone: ''
 
 # URL
@@ -106,3 +106,9 @@ deploy:
   repo: git@github.com:yangxiaolang/yangxiaolang.github.io.git
   # example, https://github.com/hexojs/hexojs.github.io
   branch: gh-pages
+
+excerpt:
+  depth: 1
+  excerpt_excludes: []
+  more_excludes: []
+  hideWholePostExcerpts: true
