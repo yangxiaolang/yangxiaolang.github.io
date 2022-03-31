@@ -28,12 +28,18 @@
 <meta property="og:site_name" content="浪先生的世界">
 <meta property="og:description" content="同事在部署项目到部署环境上启动验证的时候，使用 curl 访问本机 IP 的时候 Connection refused 的了。因为 HTTP 服务启动时监听的 Host 是 127.0.0.1,导致了只有目的地址是 127.0.0.1 的请求才能被进程处理。借此也了解学习了一下 0.0.0.0 &amp; 127.0.0.1 &amp; 本机 IP 的差别。">
 <meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://s3.bmp.ovh/imgs/2022/03/31/40d08de3414bee88.png">
+<meta property="og:image" content="https://s3.bmp.ovh/imgs/2022/03/31/9ddc682431a989d8.png">
+<meta property="og:image" content="https://s3.bmp.ovh/imgs/2022/03/31/75ccd5aa7d8e30b6.png">
+<meta property="og:image" content="https://s3.bmp.ovh/imgs/2022/03/31/5bf775d54a808504.png">
+<meta property="og:image" content="https://s3.bmp.ovh/imgs/2022/03/31/f13de708fb8db9b3.png">
 <meta property="article:published_time" content="2022-03-31T14:13:38.000Z">
-<meta property="article:modified_time" content="2022-03-31T07:48:12.223Z">
+<meta property="article:modified_time" content="2022-03-31T15:32:47.138Z">
 <meta property="article:author" content="Mr.lang">
 <meta property="article:tag" content="计算机网络">
 <meta property="article:tag" content="部署">
 <meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://s3.bmp.ovh/imgs/2022/03/31/40d08de3414bee88.png">
 
 <link rel="canonical" href="http://example.com/2022/03/31/localhost-loopback-md/">
 
@@ -176,7 +182,7 @@
               <span class="post-meta-item-text">发表于</span>
               
 
-              <time title="创建时间：2022-03-31 14:13:38 / 修改时间：07:48:12" itemprop="dateCreated datePublished" datetime="2022-03-31T14:13:38+00:00">2022-03-31</time>
+              <time title="创建时间：2022-03-31 14:13:38 / 修改时间：15:32:47" itemprop="dateCreated datePublished" datetime="2022-03-31T14:13:38+00:00">2022-03-31</time>
             </span>
 
           
@@ -191,18 +197,57 @@
 
       
         <p>同事在部署项目到部署环境上启动验证的时候，使用 curl 访问本机 IP 的时候 Connection refused 的了。因为 HTTP 服务启动时监听的 Host 是 127.0.0.1,导致了只有目的地址是 127.0.0.1 的请求才能被进程处理。借此也了解学习了一下 0.0.0.0 &amp; 127.0.0.1 &amp; 本机 IP 的差别。</p>
-<h2 id="地址对比"><a href="#地址对比" class="headerlink" title="地址对比"></a>地址对比</h2><h3 id="0-0-0-0"><a href="#0-0-0-0" class="headerlink" title="0.0.0.0"></a>0.0.0.0</h3><p>代表的是本机所有 IP 地址,无论主机绑定了多少 IP 地址,只要监听了本机的 0.0.0.0 上的端口，就等于监听机器上的所有 IP 的该端口。只要发往该端口 <strong>HTTP 报文的目的地址 IP 是主机的任一 IP</strong>，就可以被接收。</p>
-<h3 id="127-0-0-1"><a href="#127-0-0-1" class="headerlink" title="127.0.0.1"></a>127.0.0.1</h3><p>是<a target="_blank" rel="noopener" href="https://baike.baidu.com/item/%E5%9B%9E%E9%80%81%E5%9C%B0%E5%9D%80/8021522">环回地址（Loopback Address）</a>,代表本地主机。发往环回地址的请求，会在 <strong>IP 层</strong>短路，不再向下传递，而是立即返回。一般用于网络软件测试或进程间通信。<br>需要注意的是，如果进程监听的是本机的 127.0.0.1 上的端口，那么只有 <strong>HTTP 报文的目的地址 IP 是 127.0.0.1 的请求才可以被接收</strong>。</p>
-<h3 id="本机-IP"><a href="#本机-IP" class="headerlink" title="本机 IP"></a>本机 IP</h3><p>本机 IP 是开放的 IP 地址，在网络中代表本机的 IP 地址，可通过这些 IP 地址远程访问或控制主机。进程的监听效果跟 127.0.0.1 相同，只 <strong>HTTP 报文的目的地址 IP 是 进程监听的本机 IP</strong> 的请求才可以被接收。</p>
-<h3 id="localhost"><a href="#localhost" class="headerlink" title="localhost"></a>localhost</h3><p><strong>localhost 不是 IP 地址，而是一个在本地的 hosts 文件里定义好解析后 IP 的域名</strong>，一般解析为 127.0.0.1，所以一般将其作为“本地主机”。</p>
+<h2 id="地址对比"><a href="#地址对比" class="headerlink" title="地址对比"></a>地址对比</h2><h3 id="0-0-0-0"><a href="#0-0-0-0" class="headerlink" title="0.0.0.0"></a>0.0.0.0</h3><p>代表的是本机所有 IP 地址,无论主机绑定了多少 IP 地址,只要监听了本机的 0.0.0.0 上的端口，就等于监听机器上的所有 IP 的该端口。<strong>主机所有 IP 各自所在网络的请求都可以被接收</strong>。</p>
+<h3 id="127-0-0-1"><a href="#127-0-0-1" class="headerlink" title="127.0.0.1"></a>127.0.0.1</h3><p>是<a target="_blank" rel="noopener" href="https://baike.baidu.com/item/%E5%9B%9E%E9%80%81%E5%9C%B0%E5%9D%80/8021522">环回地址（Loopback Address）</a>,代表本地主机。发往环回地址的请求，会在 <strong>IP 层</strong>短路，不再向下传递，而是立即返回。一般用于网络软件测试或进程间通信。<br>需要注意的是，如果进程监听的是本机的 127.0.0.1 上的端口，就只能接受<strong>来自本机的请求</strong>。</p>
+<h3 id="本机-IP"><a href="#本机-IP" class="headerlink" title="本机 IP"></a>本机 IP</h3><p>本机 IP 是开放的 IP 地址，在网络中代表本机的 IP 地址，可通过这些 IP 地址远程访问或控制主机。进程的监听效果跟 127.0.0.1 相同，只有在 <strong>IP 所在网络内的请求</strong>才可以被接收,<strong>不包括本机</strong>。<br>即，主机有一个内网地址 IP 和一个外网地址 IP，监听哪个网络的 IP 就只能接收来自该网络内发往该 IP 的请求。</p>
+<h3 id="localhost"><a href="#localhost" class="headerlink" title="localhost"></a>localhost</h3><p><strong>localhost 不是 IP 地址，而是一个在本地的 hosts 文件里定义好解析后 IP 的域名</strong>，一般解析为 127.0.0.1，所以一般将其作为“本地主机”。<br><img src="https://s3.bmp.ovh/imgs/2022/03/31/40d08de3414bee88.png" alt="&quot;windows解析为ipv6地址::1,linux解析为ipv4地址127.0.0.1&quot;" title="windows解析为ipv6地址::1,linux解析为ipv4地址127.0.0.1"></p>
 <h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3><ul>
 <li>127.0.0.1 和 localhost 代表本地主机，发送到该目的地址的请求不参与网络传输，一般只用于本地测试。</li>
-<li>0.0.0.0 和本机 IP 代表网络中的本机，本机 IP 是主机多个 IP 中的一个，0.0.0.0 代表主机所有的 IP。</li>
+<li>本机 IP 代表网络中的本机，本机 IP 是主机多个 IP 中的一个。</li>
+<li>0.0.0.0 代表主机所有的 IP，包括内外网地址和环回地址。<table>
+<thead>
+<tr>
+<th>名称</th>
+<th>定义</th>
+<th>特性</th>
+<th>作为 Host 接收何种请求</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>127.0.0.1</td>
+<td>这是一个<a target="_blank" rel="noopener" href="https://baike.baidu.com/item/%E5%9B%9E%E9%80%81%E5%9C%B0%E5%9D%80/8021522">回送地址</a>，即主机 IP 堆栈内部的 IP 地址。</td>
+<td>使用回送地址发送数据，协议软件立即返回，不进行任何网络传输;</td>
+<td>只接受本地请求</td>
+</tr>
+<tr>
+<td>本机 IP</td>
+<td>一种由网络地址和主机地址组成的互联网协议地址，目前存在 IPv4 和 IPv6 两种协议的 IP 地址。</td>
+<td>在同一个网络地址下，主机间可相互访问。代表在该网络地址下的本机</td>
+<td>只接受来自 IP 所在网络请求，不包括本机</td>
+</tr>
+<tr>
+<td>0.0.0.0</td>
+<td>在 IPv4 中，它是一个不可路由的元地址，用于指定无效、未知或不适用的目标。</td>
+<td>any IPv4 address at all，所在所有网络下的本机</td>
+<td>接收任意来源请求</td>
+</tr>
+</tbody></table>
+</li>
 </ul>
 <h2 id="程序验证"><a href="#程序验证" class="headerlink" title="程序验证"></a>程序验证</h2><p>其实这种问题很少遇到，一般网络框架都会对监听的 Host 有一个缺省值，即 0.0.0.0，除非指定了 host。下面就是通过显式声明来指定进程监听的 host 来验证。</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 验证代码</span></span><br><span class="line"><span class="keyword">var</span> http = <span class="built_in">require</span>(<span class="string">&quot;http&quot;</span>);</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> host = <span class="string">&quot;127.0.0.1&quot;</span>;</span><br><span class="line"><span class="keyword">const</span> port = <span class="number">8080</span>;</span><br><span class="line">http</span><br><span class="line">  .<span class="title function_">createServer</span>(<span class="keyword">function</span> (<span class="params">request, response</span>) &#123;</span><br><span class="line">    response.<span class="title function_">write</span>(<span class="string">&quot;You can access me!\n&quot;</span>);</span><br><span class="line">    response.<span class="title function_">end</span>();</span><br><span class="line">  &#125;)</span><br><span class="line">  .<span class="title function_">listen</span>(port, host);</span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">`Server running at http://<span class="subst">$&#123;host&#125;</span>:<span class="subst">$&#123;port&#125;</span>/`</span>);</span><br></pre></td></tr></table></figure>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 验证代码</span></span><br><span class="line"><span class="keyword">const</span> http = <span class="built_in">require</span>(<span class="string">&quot;http&quot;</span>);</span><br><span class="line"><span class="keyword">const</span> url = <span class="built_in">require</span>(<span class="string">&quot;url&quot;</span>);</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> host = <span class="string">&quot;127.0.0.1&quot;</span>;</span><br><span class="line"><span class="keyword">const</span> port = <span class="number">8080</span>;</span><br><span class="line"></span><br><span class="line">http</span><br><span class="line">  .<span class="title function_">createServer</span>(<span class="keyword">function</span> (<span class="params">request, response</span>) &#123;</span><br><span class="line">    <span class="keyword">const</span> &#123; query &#125; = url.<span class="title function_">parse</span>(request.<span class="property">url</span>, <span class="literal">true</span>);</span><br><span class="line">    <span class="variable language_">console</span>.<span class="title function_">log</span>(query.<span class="property">name</span>);</span><br><span class="line">    response.<span class="title function_">write</span>(<span class="string">`Hello <span class="subst">$&#123;query.name || <span class="string">&quot;Stranger&quot;</span>&#125;</span> , You can access me!\n`</span>);</span><br><span class="line">    response.<span class="title function_">end</span>();</span><br><span class="line">  &#125;)</span><br><span class="line">  .<span class="title function_">listen</span>(port, host);</span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">`Server running at http://<span class="subst">$&#123;host&#125;</span>:<span class="subst">$&#123;port&#125;</span>/`</span>);</span><br></pre></td></tr></table></figure>
 
-<p>测试环境使用 windows 和 wsl 作为同一局域网下的两台主机,wsl 运行验证程序,同样使用 curl 进行验证。</p>
+<p>测试环境使用 windows 和 wsl 作为同一局域网下的两台主机,wsl 运行验证程序,同样使用 curl 进行验证。<br><img src="https://s3.bmp.ovh/imgs/2022/03/31/9ddc682431a989d8.png" alt="&quot;WSL主机IP eth0-inet:172.20.163.64&quot;" title="WSL主机IP eth0-inet:172.20.163.64"></p>
+<blockquote>
+<p><strong>注意：</strong>事实上，windows 和 wsl 并不适合作为测试，因为他们共享了 127.0.0.1 和 localhost,并且 windows 下的 0.0.0.0 是无效地址了。这里只是目前手头比较快速的验证方法</p>
+</blockquote>
+<h3 id="host-x3D-”127-0-0-1”"><a href="#host-x3D-”127-0-0-1”" class="headerlink" title="host&#x3D;”127.0.0.1”"></a>host&#x3D;”127.0.0.1”</h3><p><img src="https://s3.bmp.ovh/imgs/2022/03/31/75ccd5aa7d8e30b6.png"></p>
+<h3 id="host-x3D-”172-20-163-64”-本机-IP"><a href="#host-x3D-”172-20-163-64”-本机-IP" class="headerlink" title="host&#x3D;”172.20.163.64” (本机 IP)"></a>host&#x3D;”172.20.163.64” (本机 IP)</h3><p><img src="https://s3.bmp.ovh/imgs/2022/03/31/5bf775d54a808504.png"></p>
+<h3 id="host-x3D-”0-0-0-0”"><a href="#host-x3D-”0-0-0-0”" class="headerlink" title="host&#x3D;”0.0.0.0”"></a>host&#x3D;”0.0.0.0”</h3><p><img src="https://s3.bmp.ovh/imgs/2022/03/31/f13de708fb8db9b3.png"></p>
+<h2 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h2><ol>
+<li><a target="_blank" rel="noopener" href="https://juejin.cn/post/7065520262573195294">localhost、127.0.0.1、0.0.0.0 的联系与区别</a></li>
+<li><a target="_blank" rel="noopener" href="https://blog.csdn.net/m0_45406092/article/details/118860649">【计算机网络】0.0.0.0 与 127.0.0.1 的区别</a></li>
+</ol>
 
     </div>
 
@@ -284,7 +329,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%9C%B0%E5%9D%80%E5%AF%B9%E6%AF%94"><span class="nav-number">1.</span> <span class="nav-text">地址对比</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#0-0-0-0"><span class="nav-number">1.1.</span> <span class="nav-text">0.0.0.0</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#127-0-0-1"><span class="nav-number">1.2.</span> <span class="nav-text">127.0.0.1</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%9C%AC%E6%9C%BA-IP"><span class="nav-number">1.3.</span> <span class="nav-text">本机 IP</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#localhost"><span class="nav-number">1.4.</span> <span class="nav-text">localhost</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%80%BB%E7%BB%93"><span class="nav-number">1.5.</span> <span class="nav-text">总结</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%A8%8B%E5%BA%8F%E9%AA%8C%E8%AF%81"><span class="nav-number">2.</span> <span class="nav-text">程序验证</span></a></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%9C%B0%E5%9D%80%E5%AF%B9%E6%AF%94"><span class="nav-number">1.</span> <span class="nav-text">地址对比</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#0-0-0-0"><span class="nav-number">1.1.</span> <span class="nav-text">0.0.0.0</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#127-0-0-1"><span class="nav-number">1.2.</span> <span class="nav-text">127.0.0.1</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%9C%AC%E6%9C%BA-IP"><span class="nav-number">1.3.</span> <span class="nav-text">本机 IP</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#localhost"><span class="nav-number">1.4.</span> <span class="nav-text">localhost</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%80%BB%E7%BB%93"><span class="nav-number">1.5.</span> <span class="nav-text">总结</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%A8%8B%E5%BA%8F%E9%AA%8C%E8%AF%81"><span class="nav-number">2.</span> <span class="nav-text">程序验证</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#host-x3D-%E2%80%9D127-0-0-1%E2%80%9D"><span class="nav-number">2.1.</span> <span class="nav-text">host&#x3D;”127.0.0.1”</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#host-x3D-%E2%80%9D172-20-163-64%E2%80%9D-%E6%9C%AC%E6%9C%BA-IP"><span class="nav-number">2.2.</span> <span class="nav-text">host&#x3D;”172.20.163.64” (本机 IP)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#host-x3D-%E2%80%9D0-0-0-0%E2%80%9D"><span class="nav-number">2.3.</span> <span class="nav-text">host&#x3D;”0.0.0.0”</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8F%82%E8%80%83%E8%B5%84%E6%96%99"><span class="nav-number">3.</span> <span class="nav-text">参考资料</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 
