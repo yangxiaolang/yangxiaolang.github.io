@@ -62,7 +62,6 @@ footer:
     animated: false
     # Change the color of icon, using Hex Code.
     color: "#ff0000"
-    size: 14px
 
   # If not defined, `author` from Hexo `_config.yml` will be used.
   copyright:
@@ -425,7 +424,7 @@ font:
   global:
     external: true
     family: Arial
-    size: 
+    size: 0.9
 
   # Font settings for site title (.site-title).
   title:
