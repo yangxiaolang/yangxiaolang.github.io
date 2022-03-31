@@ -21,15 +21,21 @@
     var CONFIG = {"hostname":"example.com","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":null},"back2top":{"enable":true,"sidebar":true,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":true,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
   </script>
 
-  <meta property="og:type" content="website">
-<meta property="og:title" content="浪先生的世界">
-<meta property="og:url" content="http://example.com/archives/2022/02/index.html">
+  <meta name="description" content="同事在部署项目到部署环境上启动验证的时候，使用 curl 访问本机 IP 的时候 Connection refused 的了。因为 HTTP 服务启动时监听的 Host 是 127.0.0.1,导致了只有目的地址是 127.0.0.1 的请求才能被进程处理。借此也了解学习了一下 0.0.0.0 &amp; 127.0.0.1 &amp; 本机 IP 的差别。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="0.0.0.0 &amp; 127.0.0.1 &amp; 本机IP的差别">
+<meta property="og:url" content="http://example.com/2022/03/31/localhost-loopback-md/index.html">
 <meta property="og:site_name" content="浪先生的世界">
+<meta property="og:description" content="同事在部署项目到部署环境上启动验证的时候，使用 curl 访问本机 IP 的时候 Connection refused 的了。因为 HTTP 服务启动时监听的 Host 是 127.0.0.1,导致了只有目的地址是 127.0.0.1 的请求才能被进程处理。借此也了解学习了一下 0.0.0.0 &amp; 127.0.0.1 &amp; 本机 IP 的差别。">
 <meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2022-03-31T14:13:38.000Z">
+<meta property="article:modified_time" content="2022-03-31T07:48:12.223Z">
 <meta property="article:author" content="Mr.lang">
+<meta property="article:tag" content="计算机网络">
+<meta property="article:tag" content="部署">
 <meta name="twitter:card" content="summary">
 
-<link rel="canonical" href="http://example.com/archives/2022/02/">
+<link rel="canonical" href="http://example.com/2022/03/31/localhost-loopback-md/">
 
 
 <script id="page-configurations">
@@ -37,12 +43,12 @@
   CONFIG.page = {
     sidebar: "",
     isHome : false,
-    isPost : false,
+    isPost : true,
     lang   : 'zh-CN'
   };
 </script>
 
-  <title>归档 | 浪先生的世界</title>
+  <title>0.0.0.0 & 127.0.0.1 & 本机IP的差别 | 浪先生的世界</title>
   
 
 
@@ -139,50 +145,93 @@
         <div class="content-wrap">
           
 
-          <div class="content archive">
+          <div class="content post posts-expand">
             
 
+    
   
   
-  
-  <div class="post-block">
-    <div class="posts-collapse">
-      <div class="collection-title">
-        <span class="collection-header">嗯..! 目前共计 2 篇日志。 继续努力。</span>
-      </div>
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2022/03/31/localhost-loopback-md/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/quin.jpg">
+      <meta itemprop="name" content="Mr.lang">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="浪先生的世界">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          0.0.0.0 & 127.0.0.1 & 本机IP的差别
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2022-03-31 14:13:38 / 修改时间：07:48:12" itemprop="dateCreated datePublished" datetime="2022-03-31T14:13:38+00:00">2022-03-31</time>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
 
       
-    <div class="collection-year">
-      <span class="collection-header">2022</span>
+        <p>同事在部署项目到部署环境上启动验证的时候，使用 curl 访问本机 IP 的时候 Connection refused 的了。因为 HTTP 服务启动时监听的 Host 是 127.0.0.1,导致了只有目的地址是 127.0.0.1 的请求才能被进程处理。借此也了解学习了一下 0.0.0.0 &amp; 127.0.0.1 &amp; 本机 IP 的差别。</p>
+<h2 id="地址对比"><a href="#地址对比" class="headerlink" title="地址对比"></a>地址对比</h2><h3 id="0-0-0-0"><a href="#0-0-0-0" class="headerlink" title="0.0.0.0"></a>0.0.0.0</h3><p>代表的是本机所有 IP 地址,无论主机绑定了多少 IP 地址,只要监听了本机的 0.0.0.0 上的端口，就等于监听机器上的所有 IP 的该端口。只要发往该端口 <strong>HTTP 报文的目的地址 IP 是主机的任一 IP</strong>，就可以被接收。</p>
+<h3 id="127-0-0-1"><a href="#127-0-0-1" class="headerlink" title="127.0.0.1"></a>127.0.0.1</h3><p>是<a target="_blank" rel="noopener" href="https://baike.baidu.com/item/%E5%9B%9E%E9%80%81%E5%9C%B0%E5%9D%80/8021522">环回地址（Loopback Address）</a>,代表本地主机。发往环回地址的请求，会在 <strong>IP 层</strong>短路，不再向下传递，而是立即返回。一般用于网络软件测试或进程间通信。<br>需要注意的是，如果进程监听的是本机的 127.0.0.1 上的端口，那么只有 <strong>HTTP 报文的目的地址 IP 是 127.0.0.1 的请求才可以被接收</strong>。</p>
+<h3 id="本机-IP"><a href="#本机-IP" class="headerlink" title="本机 IP"></a>本机 IP</h3><p>本机 IP 是开放的 IP 地址，在网络中代表本机的 IP 地址，可通过这些 IP 地址远程访问或控制主机。进程的监听效果跟 127.0.0.1 相同，只 <strong>HTTP 报文的目的地址 IP 是 进程监听的本机 IP</strong> 的请求才可以被接收。</p>
+<h3 id="localhost"><a href="#localhost" class="headerlink" title="localhost"></a>localhost</h3><p><strong>localhost 不是 IP 地址，而是一个在本地的 hosts 文件里定义好解析后 IP 的域名</strong>，一般解析为 127.0.0.1，所以一般将其作为“本地主机”。</p>
+<h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3><ul>
+<li>127.0.0.1 和 localhost 代表本地主机，发送到该目的地址的请求不参与网络传输，一般只用于本地测试。</li>
+<li>0.0.0.0 和本机 IP 代表网络中的本机，本机 IP 是主机多个 IP 中的一个，0.0.0.0 代表主机所有的 IP。</li>
+</ul>
+<h2 id="程序验证"><a href="#程序验证" class="headerlink" title="程序验证"></a>程序验证</h2><p>其实这种问题很少遇到，一般网络框架都会对监听的 Host 有一个缺省值，即 0.0.0.0，除非指定了 host。下面就是通过显式声明来指定进程监听的 host 来验证。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 验证代码</span></span><br><span class="line"><span class="keyword">var</span> http = <span class="built_in">require</span>(<span class="string">&quot;http&quot;</span>);</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> host = <span class="string">&quot;127.0.0.1&quot;</span>;</span><br><span class="line"><span class="keyword">const</span> port = <span class="number">8080</span>;</span><br><span class="line">http</span><br><span class="line">  .<span class="title function_">createServer</span>(<span class="keyword">function</span> (<span class="params">request, response</span>) &#123;</span><br><span class="line">    response.<span class="title function_">write</span>(<span class="string">&quot;You can access me!\n&quot;</span>);</span><br><span class="line">    response.<span class="title function_">end</span>();</span><br><span class="line">  &#125;)</span><br><span class="line">  .<span class="title function_">listen</span>(port, host);</span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">`Server running at http://<span class="subst">$&#123;host&#125;</span>:<span class="subst">$&#123;port&#125;</span>/`</span>);</span><br></pre></td></tr></table></figure>
+
+<p>测试环境使用 windows 和 wsl 作为同一局域网下的两台主机,wsl 运行验证程序,同样使用 curl 进行验证。</p>
+
     </div>
 
-  <article itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
+    
+    
+    
 
-      <div class="post-meta">
-        <time itemprop="dateCreated"
-              datetime="2022-02-06T10:31:11+00:00"
-              content="2022-02-06">
-          02-06
-        </time>
-      </div>
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/" rel="tag"># 计算机网络</a>
+              <a href="/tags/%E9%83%A8%E7%BD%B2/" rel="tag"># 部署</a>
+          </div>
 
-      <div class="post-title">
-          <a class="post-title-link" href="/2022/02/06/hello-world/" itemprop="url">
-            <span itemprop="name">Hello World</span>
-          </a>
-      </div>
+        
 
-    </header>
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2022/02/06/hello-world/" rel="prev" title="Hello World">
+      <i class="fa fa-chevron-left"></i> Hello World
+    </a></div>
+      <div class="post-nav-item"></div>
+    </div>
+      </footer>
+    
   </article>
-
-
-    </div>
-  </div>
   
   
-  
-
   
 
 
@@ -235,6 +284,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%9C%B0%E5%9D%80%E5%AF%B9%E6%AF%94"><span class="nav-number">1.</span> <span class="nav-text">地址对比</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#0-0-0-0"><span class="nav-number">1.1.</span> <span class="nav-text">0.0.0.0</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#127-0-0-1"><span class="nav-number">1.2.</span> <span class="nav-text">127.0.0.1</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%9C%AC%E6%9C%BA-IP"><span class="nav-number">1.3.</span> <span class="nav-text">本机 IP</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#localhost"><span class="nav-number">1.4.</span> <span class="nav-text">localhost</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%80%BB%E7%BB%93"><span class="nav-number">1.5.</span> <span class="nav-text">总结</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%A8%8B%E5%BA%8F%E9%AA%8C%E8%AF%81"><span class="nav-number">2.</span> <span class="nav-text">程序验证</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 
