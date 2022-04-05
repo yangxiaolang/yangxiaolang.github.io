@@ -21,19 +21,26 @@
     var CONFIG = {"hostname":"example.com","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":null},"back2top":{"enable":true,"sidebar":true,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":true,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
   </script>
 
-  <meta name="description" content="Welcome to Hexo! This is your very first post. Check documentation for more info. If you get any problems when using Hexo, you can find the answer in troubleshooting or you can ask me on GitHub.">
+  <meta name="description" content="给开发项目做webpack v3升级到webpack v4的之后，在build的时候出现了内存泄漏的问题，折腾了好几天终于定位解决了，虽然这个问题估计几乎不会有人能遇到了，但还是记录一下，主要是定位的思路。是内存不足还是内存泄漏?内存泄漏是运行时还是编译时的内存泄漏?编译时使用什么方法排查编译时的内存泄漏发生在打包什么模块时?二分法">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Hello World">
-<meta property="og:url" content="http://example.com/2022/02/06/hello-world/index.html">
+<meta property="og:title" content="Webpack升级导致内存泄露的定位排查">
+<meta property="og:url" content="http://example.com/2021/01/27/webpack-upgrade-bug/index.html">
 <meta property="og:site_name" content="浪先生的世界">
-<meta property="og:description" content="Welcome to Hexo! This is your very first post. Check documentation for more info. If you get any problems when using Hexo, you can find the answer in troubleshooting or you can ask me on GitHub.">
+<meta property="og:description" content="给开发项目做webpack v3升级到webpack v4的之后，在build的时候出现了内存泄漏的问题，折腾了好几天终于定位解决了，虽然这个问题估计几乎不会有人能遇到了，但还是记录一下，主要是定位的思路。是内存不足还是内存泄漏?内存泄漏是运行时还是编译时的内存泄漏?编译时使用什么方法排查编译时的内存泄漏发生在打包什么模块时?二分法">
 <meta property="og:locale" content="zh_CN">
-<meta property="article:published_time" content="2022-02-06T10:31:11.000Z">
-<meta property="article:modified_time" content="2022-02-06T10:31:11.000Z">
+<meta property="og:image" content="https://s3.bmp.ovh/imgs/2022/04/05/e36cefe5c968e771.png">
+<meta property="og:image" content="https://s3.bmp.ovh/imgs/2022/04/05/f3cb5c76024f899c.png">
+<meta property="og:image" content="https://s3.bmp.ovh/imgs/2022/04/05/609ad8f0e0bd1da9.png">
+<meta property="og:image" content="https://s3.bmp.ovh/imgs/2022/04/05/3d4804667a18189b.png">
+<meta property="og:image" content="https://s3.bmp.ovh/imgs/2022/04/05/6d65c0e19dc673d9.png">
+<meta property="og:image" content="https://s3.bmp.ovh/imgs/2022/04/05/609ad8f0e0bd1da9.png">
+<meta property="article:published_time" content="2021-01-27T11:54:00.000Z">
+<meta property="article:modified_time" content="2021-01-27T11:54:00.000Z">
 <meta property="article:author" content="Mr.lang">
 <meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://s3.bmp.ovh/imgs/2022/04/05/e36cefe5c968e771.png">
 
-<link rel="canonical" href="http://example.com/2022/02/06/hello-world/">
+<link rel="canonical" href="http://example.com/2021/01/27/webpack-upgrade-bug/">
 
 
 <script id="page-configurations">
@@ -46,7 +53,7 @@
   };
 </script>
 
-  <title>Hello World | 浪先生的世界</title>
+  <title>Webpack升级导致内存泄露的定位排查 | 浪先生的世界</title>
   
 
 
@@ -150,7 +157,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2022/02/06/hello-world/">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2021/01/27/webpack-upgrade-bug/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/quin.jpg">
@@ -163,7 +170,7 @@
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
-          Hello World
+          Webpack升级导致内存泄露的定位排查
         </h1>
 
         <div class="post-meta">
@@ -173,7 +180,7 @@
               </span>
               <span class="post-meta-item-text">发表于</span>
 
-              <time title="创建时间：2022-02-06 10:31:11" itemprop="dateCreated datePublished" datetime="2022-02-06T10:31:11+00:00">2022-02-06</time>
+              <time title="创建时间：2021-01-27 11:54:00" itemprop="dateCreated datePublished" datetime="2021-01-27T11:54:00+00:00">2021-01-27</time>
             </span>
 
           <br>
@@ -182,14 +189,14 @@
                 <i class="far fa-file-word"></i>
               </span>
                 <span class="post-meta-item-text">本文字数：</span>
-              <span>367</span>
+              <span>2k</span>
             </span>
             <span class="post-meta-item" title="阅读时长">
               <span class="post-meta-item-icon">
                 <i class="far fa-clock"></i>
               </span>
                 <span class="post-meta-item-text">阅读时长 &asymp;</span>
-              <span>1 分钟</span>
+              <span>3 分钟</span>
             </span>
 
         </div>
@@ -201,19 +208,17 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <p>Welcome to <a target="_blank" rel="noopener" href="https://hexo.io/">Hexo</a>! This is your very first post. Check <a target="_blank" rel="noopener" href="https://hexo.io/docs/">documentation</a> for more info. If you get any problems when using Hexo, you can find the answer in <a target="_blank" rel="noopener" href="https://hexo.io/docs/troubleshooting.html">troubleshooting</a> or you can ask me on <a target="_blank" rel="noopener" href="https://github.com/hexojs/hexo/issues">GitHub</a>.</p>
-<h2 id="Quick-Start"><a href="#Quick-Start" class="headerlink" title="Quick Start"></a>Quick Start</h2><h3 id="Create-a-new-post"><a href="#Create-a-new-post" class="headerlink" title="Create a new post"></a>Create a new post</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo new <span class="string">&quot;My New Post&quot;</span></span><br></pre></td></tr></table></figure>
-
-<p>More info: <a target="_blank" rel="noopener" href="https://hexo.io/docs/writing.html">Writing</a></p>
-<h3 id="Run-server"><a href="#Run-server" class="headerlink" title="Run server"></a>Run server</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo server</span><br></pre></td></tr></table></figure>
-
-<p>More info: <a target="_blank" rel="noopener" href="https://hexo.io/docs/server.html">Server</a></p>
-<h3 id="Generate-static-files"><a href="#Generate-static-files" class="headerlink" title="Generate static files"></a>Generate static files</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo generate</span><br></pre></td></tr></table></figure>
-
-<p>More info: <a target="_blank" rel="noopener" href="https://hexo.io/docs/generating.html">Generating</a></p>
-<h3 id="Deploy-to-remote-sites"><a href="#Deploy-to-remote-sites" class="headerlink" title="Deploy to remote sites"></a>Deploy to remote sites</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo deploy</span><br></pre></td></tr></table></figure>
-
-<p>More info: <a target="_blank" rel="noopener" href="https://hexo.io/docs/one-command-deployment.html">Deployment</a></p>
+        <p>给开发项目做webpack v3升级到webpack v4的之后，在build的时候出现了内存泄漏的问题，折腾了好几天终于定位解决了，虽然这个问题估计几乎不会有人能遇到了，但还是记录一下，主要是定位的思路。<br>是内存不足还是内存泄漏?内存泄漏<br>是运行时还是编译时的内存泄漏?编译时<br>使用什么方法排查编译时的内存泄漏发生在打包什么模块时?二分法</p>
+<h2 id="问题背景"><a href="#问题背景" class="headerlink" title="问题背景"></a>问题背景</h2><p>开发的项目使用的是之前的前端在github找的一个vue后台管理模板，按要求更换到公司的vue后台管理模板工程，涉及到webpack v3到webpack v4的升级，在升级完成之后，dev模式启动未出现问题，但是build的时候却出现了内存泄露的问题。<br><img src="https://s3.bmp.ovh/imgs/2022/04/05/e36cefe5c968e771.png" alt="内存泄漏问题截图" title="内存泄漏问题截图"></p>
+<h2 id="问题定位"><a href="#问题定位" class="headerlink" title="问题定位"></a>问题定位</h2><p>根据搜索build时JavaScript heap out of memory,得到一般的解决方案为增加node进程可用的最大内存</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">node --max_old_space_size=4096 build/build.js</span><br></pre></td></tr></table></figure>
+<p>增加node在打包时的可用最大内存为4G，但同样会出现上述的JavaScript heap out of memory，猜测有内存泄漏的问题。<br>观察windows的任务管理器，打包生产版本时内存使用率达到了1G以上且仍在增长，正常情况应稳定为400-600MB。<br><img src="https://s3.bmp.ovh/imgs/2022/04/05/f3cb5c76024f899c.png" alt="任务管理器" title="任务管理器"><br>由于dev版本并没有这样的问题，所以应该不是运行时的内存泄漏，而是编译时的内存泄漏，也就是内存泄漏并不是业务代码造成的，而是webpack打包配置有问题造成编译时的内存泄漏。<br>是编译时的内存泄露，那么错误报告中的堆栈信息作用就有限了，需要使用其他办法定位内存泄漏是在打包代码的什么模块时发生。<br>由于Webpack打包是静态代码打包机制，所以使用二分法来尝试webpack是在打包什么模块时产生的内存泄漏，即从入口文件开始注释掉一半的导入文件来排查内存泄漏发生在打包哪个模块的时候。<br><img src="https://s3.bmp.ovh/imgs/2022/04/05/609ad8f0e0bd1da9.png" alt="注释一半的模块重新打包来确认内存泄漏发生在哪个模块" title="注释一半的模块重新打包来确认内存泄漏发生在哪个模块"><br>从入口文件排查到打包store和router两个模块时产生了内存泄漏，而store模块内部也引入了部分router模块的内容，注释掉该部分后打包成功，说明内存泄漏发生在打包router模块时。<br>router模块引入的路由分为静态和动态两部分，同样使用二分法得到内存泄漏发生在打包路由引入的indexHome.vue和index.vue两个文件。<br>这两个文件的共同点就是都引入了这两个css文件<br><img src="https://s3.bmp.ovh/imgs/2022/04/05/3d4804667a18189b.png" alt="可能有问题的两个css文件" title="可能有问题的两个css文件"><br>将这两个文件拿出来单独打包果然发生了内存泄漏，检查webpack打包样式文件的loader配置，发现生产版本比开发版本多一条extract的属性。<br><img src="https://s3.bmp.ovh/imgs/2022/04/05/6d65c0e19dc673d9.png" alt="config" title="config"><br>该属性配置是在生成处理样式文件的一组loader时，决定最后使用哪个loader处理之前的loader处理样式文件生成的js文件。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> loaders = []</span><br><span class="line"></span><br><span class="line"><span class="comment">// Extract CSS when that option is specified</span></span><br><span class="line"><span class="comment">// (which is the case during production mode)</span></span><br><span class="line"><span class="keyword">if</span>(options.<span class="property">extract</span>)&#123;</span><br><span class="line">    loaders.<span class="title function_">push</span>(<span class="title class_">MiniCssExtractPlugin</span>.<span class="property">loader</span>)</span><br><span class="line">&#125;<span class="keyword">else</span>&#123;</span><br><span class="line">    loaders.<span class="title function_">push</span>(<span class="string">&#x27;vue-style-lodaer&#x27;</span>)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>如果extract配置为true，那么样式文件的处理最后就会使用MiniCssExxtractPlugin.loader从js文件中提取出独立的CSS文件注入。而如果配置为false,则会使用vue-style-loader直接将css样式注入。</p>
+<p>这就是开发版本和生产版本处理样式文件的loader配置的不同，所以内存泄漏应该是出现在MiniCssExxtractPlugin.loader的工作流程中。</p>
+<h2 id="问题解决"><a href="#问题解决" class="headerlink" title="问题解决"></a>问题解决</h2><p>那么解决内存泄漏最简单的解决方案当然就是不使用MiniCssExxtractPlugin.loader，这样就不会产生内存泄漏了，将extract注释掉就好。<br>但是这样打包出来的产品是没有css文件的，样式全在js文件里。本着不影响最终制品的原则，检查导致MiniCssExxtractPlugin.loader打包时内存泄漏的两个css文件。在common.css中发现以下样式配置</p>
+<figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="selector-tag">body</span>&#123;</span><br><span class="line">    <span class="attribute">font</span>: ...;</span><br><span class="line">    <span class="attribute">color</span> :...;</span><br><span class="line">    _background-attachment:fixed;</span><br><span class="line">    _background-image:<span class="built_in">url</span>(<span class="string">about:blank</span>)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>这个’_’把我整懵了，搜索之后发现这是IE6才识别的写法，作用是探测应用的运行在什么浏览器上的.。(这个作用存疑，只在CSDN上看到有人说，但是WebMDN等网站并未搜索到该用法)<br>不清楚这里探测IE6浏览器的目的，能开本身也没有需要探测运行浏览器的需求，所以这两条属性直接注释掉MiniCssExxtractPlugin.loader在打包时就不会产生内存泄露了。<br><img src="https://s3.bmp.ovh/imgs/2022/04/05/609ad8f0e0bd1da9.png" alt="_的用法" title="_的用法"></p>
 
     </div>
 
@@ -229,12 +234,12 @@
         
     <div class="post-nav">
       <div class="post-nav-item">
-    <a href="/2021/10/12/labelimage-demo/" rel="prev" title="数据集标注用标注组件的实现">
-      <i class="fa fa-chevron-left"></i> 数据集标注用标注组件的实现
+    <a href="/2020/12/28/pagespeed-optimize/" rel="prev" title="前端页面响应速度优化实践总结">
+      <i class="fa fa-chevron-left"></i> 前端页面响应速度优化实践总结
     </a></div>
       <div class="post-nav-item">
-    <a href="/2022/03/31/localhost-loopback-md/" rel="next" title="0.0.0.0 & 127.0.0.1 & 本机IP的差别">
-      0.0.0.0 & 127.0.0.1 & 本机IP的差别 <i class="fa fa-chevron-right"></i>
+    <a href="/2021/06/03/audio-bug-record/" rel="next" title="Audio标签音频源无法播放的问题记录及解决">
+      Audio标签音频源无法播放的问题记录及解决 <i class="fa fa-chevron-right"></i>
     </a></div>
     </div>
       </footer>
@@ -294,7 +299,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Quick-Start"><span class="nav-number">1.</span> <span class="nav-text">Quick Start</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Create-a-new-post"><span class="nav-number">1.1.</span> <span class="nav-text">Create a new post</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Run-server"><span class="nav-number">1.2.</span> <span class="nav-text">Run server</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Generate-static-files"><span class="nav-number">1.3.</span> <span class="nav-text">Generate static files</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Deploy-to-remote-sites"><span class="nav-number">1.4.</span> <span class="nav-text">Deploy to remote sites</span></a></li></ol></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%97%AE%E9%A2%98%E8%83%8C%E6%99%AF"><span class="nav-number">1.</span> <span class="nav-text">问题背景</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%97%AE%E9%A2%98%E5%AE%9A%E4%BD%8D"><span class="nav-number">2.</span> <span class="nav-text">问题定位</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%97%AE%E9%A2%98%E8%A7%A3%E5%86%B3"><span class="nav-number">3.</span> <span class="nav-text">问题解决</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 

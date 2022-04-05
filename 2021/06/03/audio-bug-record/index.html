@@ -21,15 +21,19 @@
     var CONFIG = {"hostname":"example.com","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":null},"back2top":{"enable":true,"sidebar":true,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":true,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
   </script>
 
-  <meta property="og:type" content="website">
-<meta property="og:title" content="浪先生的世界">
-<meta property="og:url" content="http://example.com/archives/2022/02/index.html">
+  <meta name="description" content="在前端获取音频文件的base64编码构造dataURL进行音频的播放，遇到了播放器不能播放音频以及在更换音频源src时仍然播放之前加载的音频源的的问题,在此做简单记录。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Audio标签音频源无法播放的问题记录及解决">
+<meta property="og:url" content="http://example.com/2021/06/03/audio-bug-record/index.html">
 <meta property="og:site_name" content="浪先生的世界">
+<meta property="og:description" content="在前端获取音频文件的base64编码构造dataURL进行音频的播放，遇到了播放器不能播放音频以及在更换音频源src时仍然播放之前加载的音频源的的问题,在此做简单记录。">
 <meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2021-06-03T21:48:00.000Z">
+<meta property="article:modified_time" content="2021-06-03T21:48:00.000Z">
 <meta property="article:author" content="Mr.lang">
 <meta name="twitter:card" content="summary">
 
-<link rel="canonical" href="http://example.com/archives/2022/02/">
+<link rel="canonical" href="http://example.com/2021/06/03/audio-bug-record/">
 
 
 <script id="page-configurations">
@@ -37,12 +41,12 @@
   CONFIG.page = {
     sidebar: "",
     isHome : false,
-    isPost : false,
+    isPost : true,
     lang   : 'zh-CN'
   };
 </script>
 
-  <title>归档 | 浪先生的世界</title>
+  <title>Audio标签音频源无法播放的问题记录及解决 | 浪先生的世界</title>
   
 
 
@@ -139,50 +143,97 @@
         <div class="content-wrap">
           
 
-          <div class="content archive">
+          <div class="content post posts-expand">
             
 
+    
   
   
-  
-  <div class="post-block">
-    <div class="posts-collapse">
-      <div class="collection-title">
-        <span class="collection-header">嗯..! 目前共计 14 篇日志。 继续努力。</span>
-      </div>
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2021/06/03/audio-bug-record/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/quin.jpg">
+      <meta itemprop="name" content="Mr.lang">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="浪先生的世界">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Audio标签音频源无法播放的问题记录及解决
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2021-06-03 21:48:00" itemprop="dateCreated datePublished" datetime="2021-06-03T21:48:00+00:00">2021-06-03</time>
+            </span>
+
+          <br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>741</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>1 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
 
       
-    <div class="collection-year">
-      <span class="collection-header">2022</span>
+        <p>在前端获取音频文件的base64编码构造dataURL进行音频的播放，遇到了播放器不能播放音频以及在更换音频源src时仍然播放之前加载的音频源的的问题,在此做简单记录。</p>
+<h2 id="audio标签的src无法使用dataURL"><a href="#audio标签的src无法使用dataURL" class="headerlink" title="audio标签的src无法使用dataURL"></a>audio标签的src无法使用dataURL</h2><p>audio的src引用的是dataUrl时,即音频文件的base64编码在前面加上媒体描述，会发生request too large的错误，原因是文本超出了url的限制，需要将音频的base64码转为文件二进制(Blob)对象，再创建一个指向该对象的URL，用src加载该URL来实现音频源的更换</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> bytes = <span class="variable language_">window</span>.<span class="title function_">atob</span>(voiceBase64)</span><br><span class="line"><span class="keyword">const</span> ab = <span class="keyword">new</span> <span class="title class_">ArrayBuffer</span>(bytes.<span class="property">length</span>)</span><br><span class="line"><span class="keyword">const</span> ia = <span class="keyword">new</span> <span class="title class_">Uint8Array</span>(ab)</span><br><span class="line"><span class="keyword">for</span>(<span class="keyword">let</span> i=<span class="number">0</span>;i&lt;bytes.<span class="property">length</span>&gt;;i++)&#123;</span><br><span class="line">    ia[i]=bytes.<span class="title function_">charCodeAt</span>(i)</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">const</span> url = <span class="variable constant_">URL</span>.<span class="title function_">createObjectURL</span>(</span><br><span class="line">    <span class="keyword">new</span> <span class="title class_">Blob</span>([ab],&#123;<span class="attr">type</span>:<span class="string">&#x27;audio/mpeg&#x27;</span>&#125;)</span><br><span class="line">)</span><br></pre></td></tr></table></figure>
+
+<h2 id="更换src音频源后仍然播放更换前的音频文件"><a href="#更换src音频源后仍然播放更换前的音频文件" class="headerlink" title="更换src音频源后仍然播放更换前的音频文件"></a>更换src音频源后仍然播放更换前的音频文件</h2><p>在更换音频源后，播放器未重新加载新的音频源导致新音频不能被播放，解决方案：需要调用播放器元素的load()方法重新加载音频源  <a target="_blank" rel="noopener" href="https://developer.mozilla.org/zh-CN/docs/Web/API/HTMLMediaElement/load">HTMLMediaElement.load() - Web API 接口参考 | MDN (mozilla.org)</a></p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> player = <span class="variable language_">document</span>.<span class="title function_">querySelector</span>(<span class="string">&#x27;audio-player&#x27;</span>)</span><br><span class="line">player.<span class="property">src</span> = newUrl</span><br><span class="line">player.<span class="title function_">load</span>()</span><br></pre></td></tr></table></figure>
     </div>
 
-  <article itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
+    
+    
+    
 
-      <div class="post-meta">
-        <time itemprop="dateCreated"
-              datetime="2022-02-06T10:31:11+00:00"
-              content="2022-02-06">
-          02-06
-        </time>
-      </div>
+      <footer class="post-footer">
 
-      <div class="post-title">
-          <a class="post-title-link" href="/2022/02/06/hello-world/" itemprop="url">
-            <span itemprop="name">Hello World</span>
-          </a>
-      </div>
+        
 
-    </header>
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2021/01/27/webpack-upgrade-bug/" rel="prev" title="Webpack升级导致内存泄露的定位排查">
+      <i class="fa fa-chevron-left"></i> Webpack升级导致内存泄露的定位排查
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2021/07/01/stream-meida-server/" rel="next" title="流媒体服务器镜像制作及视频ffmpeg循环推流">
+      流媒体服务器镜像制作及视频ffmpeg循环推流 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
   </article>
-
-
-    </div>
-  </div>
   
   
-  
-
   
 
 
@@ -235,6 +286,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#audio%E6%A0%87%E7%AD%BE%E7%9A%84src%E6%97%A0%E6%B3%95%E4%BD%BF%E7%94%A8dataURL"><span class="nav-number">1.</span> <span class="nav-text">audio标签的src无法使用dataURL</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%9B%B4%E6%8D%A2src%E9%9F%B3%E9%A2%91%E6%BA%90%E5%90%8E%E4%BB%8D%E7%84%B6%E6%92%AD%E6%94%BE%E6%9B%B4%E6%8D%A2%E5%89%8D%E7%9A%84%E9%9F%B3%E9%A2%91%E6%96%87%E4%BB%B6"><span class="nav-number">2.</span> <span class="nav-text">更换src音频源后仍然播放更换前的音频文件</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 
