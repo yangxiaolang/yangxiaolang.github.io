@@ -1,0 +1,532 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 6.0.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+<link rel="stylesheet" href="//fonts.googleapis.com/css?family=Arial:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"example.com","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":null},"back2top":{"enable":true,"sidebar":true,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":true,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"valine","storage":true,"lazyload":false,"nav":null,"activeClass":"valine"},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="不知道哪个地方的项目经理，售前阶段准备熟悉下我们平台，结果白屏了，老大发了我一个问题截图，报错信息是’未预期的符号“…”,预期一个属性名’,似乎是浏览器不支持展开运算符，导致的项目不能正常加载，问下了使用的浏览器，safari10 。emmm…,苹果的升级策略看样子挺保守的(-_-) 。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Safari10兼容性处理及Babel升级">
+<meta property="og:url" content="http://example.com/2022/02/09/safari-babel-upgrade/index.html">
+<meta property="og:site_name" content="浪先生的世界">
+<meta property="og:description" content="不知道哪个地方的项目经理，售前阶段准备熟悉下我们平台，结果白屏了，老大发了我一个问题截图，报错信息是’未预期的符号“…”,预期一个属性名’,似乎是浏览器不支持展开运算符，导致的项目不能正常加载，问下了使用的浏览器，safari10 。emmm…,苹果的升级策略看样子挺保守的(-_-) 。">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://s3.bmp.ovh/imgs/2022/04/06/ff26f7e3b731bfdf.png">
+<meta property="og:image" content="https://s3.bmp.ovh/imgs/2022/04/06/6ec732159a8a1a0c.jpg">
+<meta property="og:image" content="https://s3.bmp.ovh/imgs/2022/04/06/0b6982a22f071a2e.jpg">
+<meta property="og:image" content="https://s3.bmp.ovh/imgs/2022/04/06/10d5ded8dba2b7d0.jpg">
+<meta property="og:image" content="https://s3.bmp.ovh/imgs/2022/04/06/07a878edb6d016bc.jpg">
+<meta property="og:image" content="https://s3.bmp.ovh/imgs/2022/04/06/f220d925addf32a3.jpg">
+<meta property="article:published_time" content="2022-02-09T14:27:00.000Z">
+<meta property="article:modified_time" content="2022-02-09T14:27:00.000Z">
+<meta property="article:author" content="Mr.lang">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://s3.bmp.ovh/imgs/2022/04/06/ff26f7e3b731bfdf.png">
+
+<link rel="canonical" href="http://example.com/2022/02/09/safari-babel-upgrade/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>Safari10兼容性处理及Babel升级 | 浪先生的世界</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">浪先生的世界</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="reading-progress-bar"></div>
+
+  <a href="https://github.com/yangxiaolang" class="github-corner" title="Follow me on GitHub" aria-label="Follow me on GitHub" rel="noopener" target="_blank"><svg width="80" height="80" viewBox="0 0 250 250" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2022/02/09/safari-babel-upgrade/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/quin.jpg">
+      <meta itemprop="name" content="Mr.lang">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="浪先生的世界">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Safari10兼容性处理及Babel升级
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2022-02-09 14:27:00" itemprop="dateCreated datePublished" datetime="2022-02-09T14:27:00+00:00">2022-02-09</time>
+            </span>
+
+          
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Valine：</span>
+    
+    <a title="valine" href="/2022/02/09/safari-babel-upgrade/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/2022/02/09/safari-babel-upgrade/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  <br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>2.6k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>4 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>不知道哪个地方的项目经理，售前阶段准备熟悉下我们平台，结果白屏了，老大发了我一个问题截图，报错信息是’未预期的符号“…”,预期一个属性名’,似乎是浏览器不支持展开运算符，导致的项目不能正常加载，问下了使用的浏览器，safari10 。emmm…,苹果的升级策略看样子挺保守的(-_-) 。<br><img src="https://s3.bmp.ovh/imgs/2022/04/06/ff26f7e3b731bfdf.png" alt="问题截图" title="问题截图"></p>
+<h2 id="兼容性问题确认"><a href="#兼容性问题确认" class="headerlink" title="兼容性问题确认"></a>兼容性问题确认</h2><p>报错信息：<strong>未预期的符号”…”,预期一个属性名</strong><br>先定位下报错截图处的代码，应该不是用在函数执行时的剩余运算符”…” <a target="_blank" rel="noopener" href="https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Functions/Rest_parameters">剩余参数 - JavaScript | MDN (mozilla.org)</a> 。<br> 这里的 “…” 是ES2015增加的展开语法，用来展开数组等结构，展开对象是ES2018的标准，此处应该是浏览器支持的标准不支持此语法用于对象（expect a property name） <a target="_blank" rel="noopener" href="https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Operators/Spread_syntax#Spread_in_object_literals">展开语法 - JavaScript | MDN (mozilla.org)</a><br>查询支持 …语法 的浏览器版本<br><img src="https://s3.bmp.ovh/imgs/2022/04/06/6ec732159a8a1a0c.jpg" alt="Spread in object literals兼容性" title="Spread in object literals兼容性"><br>可以看到Safari11以下版本的浏览器是不支持的<a target="_blank" rel="noopener" href="https://caniuse.com/?search=Spread%20in%20object%20literals">Spread in object literals</a><br>但是，在使用webpack打包时是使用babel编译过源代码的，目标代码应该被babel降级到了es5标准，制品中应该不存在展开语法,在制品中查找到在对象结构中使用了展开语法的语句<br><img src="https://s3.bmp.ovh/imgs/2022/04/06/0b6982a22f071a2e.jpg" alt="问题代码" title="问题代码"><br>问题语句上下文使用了**isMatrixLike()**方法，业务代码中没有这个方法，定位到使用的绘图用svgjs依赖中存在此方法。也就是babel未处理node_modules里的依赖（一般也不用处理，因为npm仓库上的一般也是提供者自己处理过的<br>在AI能开的模板工程中，babel使用的是v6版本，会自动忽略node_modules目录，需要升级到v7才能通过配置文件babel.config.js 来指定处理目录<br><img src="https://s3.bmp.ovh/imgs/2022/04/06/10d5ded8dba2b7d0.jpg" alt="Babel升级文档" title="Babel升级文档"></p>
+<h2 id="Babel升级"><a href="#Babel升级" class="headerlink" title="Babel升级"></a>Babel升级</h2><h3 id="Babel简介"><a href="#Babel简介" class="headerlink" title="Babel简介"></a>Babel简介</h3><p>Babel 是一个工具链，主要用于将采用 ECMAScript 2015+ 语法编写的代码转换为向后兼容的 JavaScript 语法，以便能够运行在当前和旧版本的浏览器或其他环境中。下面列出的是 Babel 能为你做的事情：</p>
+<ul>
+<li>语法转换</li>
+<li>通过 Polyfill 方式在目标环境中添加缺失的特性 （通过引入第三方 polyfill 模块，例如 core-js）</li>
+<li>源码转换（codemods）</li>
+</ul>
+<h3 id="升级步骤"><a href="#升级步骤" class="headerlink" title="升级步骤"></a>升级步骤</h3><ol>
+<li>删除package.json依赖列表中babel相关依赖，删除node_modules目录</li>
+<li>重新npm install依赖</li>
+<li>根据手册安装babel核心组件  使用指南 · Babel 中文网 (babeljs.cn)<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npm install --save-dev @babel/core @babel/cli @babel/preset-env</span><br></pre></td></tr></table></figure></li>
+<li>根据原有babel6.x使用的插件安装新的babel7.x对应的插件及其依赖（命名规则也改变了<ul>
+<li>@babel&#x2F;eslint-parse  替代 babel-eslint 做静态代码分析</li>
+<li>@babel&#x2F;plugin-transform-runtime</li>
+<li>@babel&#x2F;plugin-syntax-dynamic-inmport</li>
+<li>@babel&#x2F;runtime-corejs3</li>
+<li>corejs@3</li>
+<li>babel-loader@8</li>
+</ul>
+</li>
+<li>修改配置文件 .babelrc &#x3D;&gt; babel.config.js , 内容修改<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="variable language_">module</span>.<span class="property">exports</span> = &#123;</span><br><span class="line">  <span class="attr">presets</span>: [</span><br><span class="line">    [</span><br><span class="line">      <span class="string">&#x27;@babel/preset-env&#x27;</span>,</span><br><span class="line">      &#123;</span><br><span class="line">        <span class="attr">useBuiltIns</span>: <span class="string">&#x27;entry&#x27;</span>,</span><br><span class="line">        <span class="attr">corejs</span>: <span class="number">3</span>,</span><br><span class="line">        <span class="attr">targets</span>: &#123;</span><br><span class="line">          <span class="string">&#x27;browsers&#x27;</span>: [<span class="string">&#x27;&gt; 1%&#x27;</span>, <span class="string">&#x27;last 4 versions&#x27;</span>, <span class="string">&#x27;not ie &lt;= 8&#x27;</span>]</span><br><span class="line">        &#125;</span><br><span class="line">      &#125;</span><br><span class="line">    ]</span><br><span class="line">  ],</span><br><span class="line">  <span class="attr">plugins</span>: [</span><br><span class="line">    <span class="comment">// 内置在preset-env中，不需要单独安装,开启loose模式,提高兼容性</span></span><br><span class="line">    [<span class="string">&#x27;@babel/plugin-transform-spread&#x27;</span>, &#123; <span class="attr">useBuiltIns</span>: <span class="literal">true</span>, <span class="attr">loose</span>: <span class="literal">true</span> &#125;],</span><br><span class="line">    [</span><br><span class="line">      <span class="string">&#x27;@babel/plugin-proposal-object-rest-spread&#x27;</span>,</span><br><span class="line">      &#123; <span class="attr">useBuiltIns</span>: <span class="literal">true</span>, <span class="attr">loose</span>: <span class="literal">true</span> &#125;</span><br><span class="line">    ]</span><br><span class="line">  ],</span><br><span class="line">  <span class="attr">env</span>: &#123;</span><br><span class="line">    <span class="attr">development</span>: &#123;</span><br><span class="line">      <span class="attr">plugins</span>: [<span class="string">&#x27;@babel/plugin-syntax-dynamic-import&#x27;</span>]</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure></li>
+<li>babel-polyfill已被弃用，修改main.js<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// remove</span></span><br><span class="line"><span class="keyword">import</span> <span class="string">&quot;babel-polyfill&quot;</span></span><br></pre></td></tr></table></figure></li>
+<li>替换eslint配置使用的解析为@babel&#x2F;eslint-parser<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="variable language_">module</span>.<span class="property">exports</span>=&#123;</span><br><span class="line">    <span class="attr">parserOptions</span>:&#123;</span><br><span class="line">        <span class="comment">// parser:&quot;babel-eslint&quot;</span></span><br><span class="line">        <span class="attr">parser</span>:<span class="string">&quot;@babel/eslint-parser&quot;</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
+<li>webpack的打包基础配置修改，babel-loader指定处理svgjs目录<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">    <span class="attr">test</span>:<span class="regexp">/\.js$/</span>,</span><br><span class="line">    <span class="attr">loader</span>:<span class="string">&#x27;babel-loader?cacheDirectory&#x27;</span>,</span><br><span class="line">    <span class="attr">include</span>:[</span><br><span class="line">        <span class="title function_">resolve</span>(<span class="string">&#x27;node_modules/@svgdotjs/scgjs&#x27;</span>)</span><br><span class="line">    ]</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="最终效果"><a href="#最终效果" class="headerlink" title="最终效果"></a>最终效果</h2>因为我没有Mac设备，所以兼容性测试用了下一些云测试平台，<a target="_blank" rel="noopener" href="https://app.lambdatest.com/">lambdatest平台</a><br><img src="https://s3.bmp.ovh/imgs/2022/04/06/07a878edb6d016bc.jpg" alt="处理前" title="处理前"><br><img src="https://s3.bmp.ovh/imgs/2022/04/06/f220d925addf32a3.jpg" alt="处理后" title="处理后"></li>
+</ol>
+<h2 id="小插曲"><a href="#小插曲" class="headerlink" title="小插曲"></a>小插曲</h2><p>说起来这个兼容性问题我一直耿耿于怀，因为当初用svgdotjs开发标注组件的时候，还特意看了下兼容性，记得文档里提到了safari3.2以上的都支持，这作者没测试充分呀。<br>于是憋了半天用英文写好了issue，说明了问题和我的解决方案，检查了好几遍英文有没有问题才发出去，结果发完了才发现</p>
+<p><strong>他文档里说的是SVG的兼容性</strong></p>
+<p>尴尬的我赶紧关了issue，作者应该还没看见吧（-_-）</p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2022/02/06/hello-world/" rel="prev" title="Hello World">
+      <i class="fa fa-chevron-left"></i> Hello World
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2022/02/15/remote-mobile-debug/" rel="next" title="远程调试Android手机edge浏览器方法">
+      远程调试Android手机edge浏览器方法 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    <div class="comments" id="valine-comments"></div>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%85%BC%E5%AE%B9%E6%80%A7%E9%97%AE%E9%A2%98%E7%A1%AE%E8%AE%A4"><span class="nav-number">1.</span> <span class="nav-text">兼容性问题确认</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Babel%E5%8D%87%E7%BA%A7"><span class="nav-number">2.</span> <span class="nav-text">Babel升级</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Babel%E7%AE%80%E4%BB%8B"><span class="nav-number">2.1.</span> <span class="nav-text">Babel简介</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8D%87%E7%BA%A7%E6%AD%A5%E9%AA%A4"><span class="nav-number">2.2.</span> <span class="nav-text">升级步骤</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%9C%80%E7%BB%88%E6%95%88%E6%9E%9C"><span class="nav-number">3.</span> <span class="nav-text">最终效果</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%B0%8F%E6%8F%92%E6%9B%B2"><span class="nav-number">4.</span> <span class="nav-text">小插曲</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Mr.lang"
+      src="/images/quin.jpg">
+  <p class="site-author-name" itemprop="name">Mr.lang</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">20</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-tags">
+        <span class="site-state-item-count">2</span>
+        <span class="site-state-item-name">标签</span>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/yangxiaolang" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;yangxiaolang" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:1810849666@qq.com" title="E-Mail → mailto:1810849666@qq.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+
+
+
+      </div>
+        <div class="back-to-top motion-element">
+          <i class="fa fa-arrow-up"></i>
+          <span>0%</span>
+        </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Mr.lang</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-area"></i>
+    </span>
+      <span class="post-meta-item-text">站点总字数：</span>
+    <span title="站点总字数">36k</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+      <span class="post-meta-item-text">站点阅读时长 &asymp;</span>
+    <span title="站点阅读时长">1:01</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js"></script>
+  <script src="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+
+<script>
+NexT.utils.loadComments(document.querySelector('#valine-comments'), () => {
+  NexT.utils.getScript('//unpkg.com/valine/dist/Valine.min.js', () => {
+    var GUEST = ['nick', 'mail', 'link'];
+    var guest = 'nick,mail,link';
+    guest = guest.split(',').filter(item => {
+      return GUEST.includes(item);
+    });
+    new Valine({
+      el         : '#valine-comments',
+      verify     : false,
+      notify     : false,
+      appId      : '8WWTzgJXahvFizSQ4skVtOxB-gzGzoHsz',
+      appKey     : 'fteCk9Az1JNHggbiRsPMJfFa',
+      placeholder: "Just go go",
+      avatar     : 'mm',
+      meta       : guest,
+      pageSize   : '10' || 10,
+      visitor    : false,
+      lang       : 'zh-cn' || 'zh-cn',
+      path       : location.pathname,
+      recordIP   : false,
+      serverURLs : ''
+    });
+  }, window.Valine);
+});
+</script>
+
+</body>
+</html>

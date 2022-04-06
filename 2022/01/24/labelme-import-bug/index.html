@@ -21,19 +21,23 @@
     var CONFIG = {"hostname":"example.com","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":null},"back2top":{"enable":true,"sidebar":true,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":true,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"valine","storage":true,"lazyload":false,"nav":null,"activeClass":"valine"},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
   </script>
 
-  <meta name="description" content="迁移中使用G6绘制一个知识图谱，知识图谱的后端主要使用思知的知识图谱API，前端使用阿里的G6绘制，echarts的力导向图的文档不太详细。简单实现思知上的知识图谱效果。">
+  <meta name="description" content="标注平台需要支持一些第三方标注平台比如labelme导出的标注文件的解析，绘制到我们自己平台的标注组件上。但是在导入labelme标注文件之后，我们的标注组件虽然能够正常绘制，但是矩形的位置都有一定程度的偏移，多边形则都是正常的。分析应该是在处理绘制矩形所需的对角端点时，未处理两端点之间的位置关系导致的。">
 <meta property="og:type" content="article">
-<meta property="og:title" content="使用G6绘制知识图谱">
-<meta property="og:url" content="http://example.com/2022/04/05/g6-kw/index.html">
+<meta property="og:title" content="第三方标注文件导入绘制矩形位置不正确">
+<meta property="og:url" content="http://example.com/2022/01/24/labelme-import-bug/index.html">
 <meta property="og:site_name" content="浪先生的世界">
-<meta property="og:description" content="迁移中使用G6绘制一个知识图谱，知识图谱的后端主要使用思知的知识图谱API，前端使用阿里的G6绘制，echarts的力导向图的文档不太详细。简单实现思知上的知识图谱效果。">
+<meta property="og:description" content="标注平台需要支持一些第三方标注平台比如labelme导出的标注文件的解析，绘制到我们自己平台的标注组件上。但是在导入labelme标注文件之后，我们的标注组件虽然能够正常绘制，但是矩形的位置都有一定程度的偏移，多边形则都是正常的。分析应该是在处理绘制矩形所需的对角端点时，未处理两端点之间的位置关系导致的。">
 <meta property="og:locale" content="zh_CN">
-<meta property="article:published_time" content="2022-04-05T23:47:43.000Z">
-<meta property="article:modified_time" content="2022-04-06T02:18:49.450Z">
+<meta property="og:image" content="https://s3.bmp.ovh/imgs/2022/04/06/b705050d4d1beed6.jpg">
+<meta property="og:image" content="https://s3.bmp.ovh/imgs/2022/04/06/0400f926e41675a9.png">
+<meta property="og:image" content="https://s3.bmp.ovh/imgs/2022/04/06/ad568692cee1c608.png">
+<meta property="article:published_time" content="2022-01-24T14:01:00.000Z">
+<meta property="article:modified_time" content="2022-01-24T14:01:00.000Z">
 <meta property="article:author" content="Mr.lang">
 <meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://s3.bmp.ovh/imgs/2022/04/06/b705050d4d1beed6.jpg">
 
-<link rel="canonical" href="http://example.com/2022/04/05/g6-kw/">
+<link rel="canonical" href="http://example.com/2022/01/24/labelme-import-bug/">
 
 
 <script id="page-configurations">
@@ -46,7 +50,7 @@
   };
 </script>
 
-  <title>使用G6绘制知识图谱 | 浪先生的世界</title>
+  <title>第三方标注文件导入绘制矩形位置不正确 | 浪先生的世界</title>
   
 
 
@@ -178,7 +182,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2022/04/05/g6-kw/">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2022/01/24/labelme-import-bug/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/quin.jpg">
@@ -191,7 +195,7 @@
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
-          使用G6绘制知识图谱
+          第三方标注文件导入绘制矩形位置不正确
         </h1>
 
         <div class="post-meta">
@@ -201,15 +205,8 @@
               </span>
               <span class="post-meta-item-text">发表于</span>
 
-              <time title="创建时间：2022-04-05 23:47:43" itemprop="dateCreated datePublished" datetime="2022-04-05T23:47:43+00:00">2022-04-05</time>
+              <time title="创建时间：2022-01-24 14:01:00" itemprop="dateCreated datePublished" datetime="2022-01-24T14:01:00+00:00">2022-01-24</time>
             </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2022-04-06 02:18:49" itemprop="dateModified" datetime="2022-04-06T02:18:49+00:00">2022-04-06</time>
-              </span>
 
           
   
@@ -220,8 +217,8 @@
       </span>
       <span class="post-meta-item-text">Valine：</span>
     
-    <a title="valine" href="/2022/04/05/g6-kw/#valine-comments" itemprop="discussionUrl">
-      <span class="post-comments-count valine-comment-count" data-xid="/2022/04/05/g6-kw/" itemprop="commentCount"></span>
+    <a title="valine" href="/2022/01/24/labelme-import-bug/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/2022/01/24/labelme-import-bug/" itemprop="commentCount"></span>
     </a>
   </span>
   
@@ -231,14 +228,14 @@
                 <i class="far fa-file-word"></i>
               </span>
                 <span class="post-meta-item-text">本文字数：</span>
-              <span>85</span>
+              <span>2k</span>
             </span>
             <span class="post-meta-item" title="阅读时长">
               <span class="post-meta-item-icon">
                 <i class="far fa-clock"></i>
               </span>
                 <span class="post-meta-item-text">阅读时长 &asymp;</span>
-              <span>1 分钟</span>
+              <span>3 分钟</span>
             </span>
 
         </div>
@@ -250,7 +247,15 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <p><strong>迁移中</strong><br>使用G6绘制一个知识图谱，知识图谱的后端主要使用思知的知识图谱API，前端使用阿里的G6绘制，echarts的力导向图的文档不太详细。简单实现思知上的知识图谱效果。</p>
+        <p>标注平台需要支持一些第三方标注平台比如labelme导出的标注文件的解析，绘制到我们自己平台的标注组件上。<br>但是在导入labelme标注文件之后，我们的标注组件虽然能够正常绘制，但是矩形的位置都有一定程度的偏移，多边形则都是正常的。<br>分析应该是在处理绘制矩形所需的对角端点时，未处理两端点之间的位置关系导致的。</p>
+<h2 id="问题分析"><a href="#问题分析" class="headerlink" title="问题分析"></a>问题分析</h2><p>标注平台和labelme都是使用矩形的一组对角端点来确定唯一一个矩形的<br>labelme会判断是哪一组对角端点确定的矩形（左上-右下，左下-右上）<br>但是标注平台只能会将begin点作为矩形的左上端点，跟end点计算出width和height后绘制出矩形<br>上述区别导致了标注平台在绘制label导入标注文件的矩形时，都会向下偏移，因为把矩形左下的端点当作了矩形的左上端点<br><img src="https://s3.bmp.ovh/imgs/2022/04/06/b705050d4d1beed6.jpg" alt="问题截图-labelme" title="问题截图-labelme"><br><img src="https://s3.bmp.ovh/imgs/2022/04/06/0400f926e41675a9.png" alt="问题截图-labelimage" title="问题截图-labelimage"></p>
+<h2 id="问题处理"><a href="#问题处理" class="headerlink" title="问题处理"></a>问题处理</h2><p>考虑到文件转换过程中最好不要对原文件的原始数据做计算处理，所以在标注平台的标注组件初始化绘制标注图形时进行处理<br>通过begin点和end点的y值大小来判断end点是右上还是右下（end点必是右端点<br>计算出标注平台绘制矩形所需的左上起始点</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> width = <span class="title class_">Math</span>.<span class="title function_">abs</span>(label.<span class="property">beginX</span> - label.<span class="property">endX</span>) *scale</span><br><span class="line"><span class="keyword">const</span> height = <span class="title class_">Math</span>.<span class="title function_">abs</span>(label.<span class="property">beginY</span> - label.<span class="property">endY</span>) *scale</span><br><span class="line"><span class="keyword">let</span> x,y</span><br><span class="line">x = (label.<span class="property">beginX</span>/<span class="variable language_">this</span>.<span class="property">bitScale</span>)*scale</span><br><span class="line">y = (label.<span class="property">beginY</span>/<span class="variable language_">this</span>.<span class="property">bitScale</span>)*scale</span><br><span class="line"><span class="keyword">if</span>(label.<span class="property">endY</span>&lt;label.<span class="property">endX</span>)&#123;</span><br><span class="line">    <span class="comment">//begin为左下端点，y减去height得到左上端点</span></span><br><span class="line">    x = (label.<span class="property">beginX</span>/<span class="variable language_">this</span>.<span class="property">bitScale</span>)*scale</span><br><span class="line">    y = ((label.<span class="property">beginY</span>-height)/<span class="variable language_">this</span>.<span class="property">bitScale</span>)*scale</span><br><span class="line">&#125;</span><br><span class="line">graph = <span class="variable language_">this</span>.<span class="property">camvas</span>.<span class="title function_">rect</span>(width/<span class="variable language_">this</span>.<span class="property">bitScale</span>,height/<span class="variable language_">this</span>.<span class="property">bitScale</span>).<span class="title function_">attr</span>(&#123;x,y&#125;)</span><br></pre></td></tr></table></figure>
+<p>此处默认了begin点都是左端点，可以借此抽出通用的根据任意一组对角点获取左上起始点(这种处理仅适用于标注平台采用的的数据结构)</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@typedef</span> &#123;<span class="type">[number,number]</span>&#125; <span class="variable">Point</span></span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@function</span> 根据矩形对角点计算矩形的绘制原点(左上端点)</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span> &#123;<span class="type">Point</span>&#125; <span class="variable">DiagonalPoint1</span></span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span> &#123;<span class="type">Point</span>&#125; <span class="variable">DiagonalPoint2</span></span></span><br><span class="line"><span class="comment"> * <span class="doctag">@return</span> &#123;<span class="type">Point</span>&#125; </span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">function</span> <span class="title function_">countRectStartPointByDiagonalPoints</span>(<span class="params">DiagonalPoint1,DiagonalPoint2</span>)&#123;</span><br><span class="line">    count [[x1,y1],[x2,y2]] = <span class="title class_">DiagonalPoint2</span>[<span class="number">0</span>] &gt;<span class="title class_">DiagonalPoint1</span>[<span class="number">0</span>]</span><br><span class="line">        ?[<span class="title class_">DiagonalPoint1</span>,<span class="title class_">DiagonalPoint2</span>]</span><br><span class="line">        :[<span class="title class_">DiagonalPoint2</span>,<span class="title class_">DiagonalPoint1</span>]</span><br><span class="line">    <span class="keyword">if</span>(x1===x2||y1===y2)&#123;</span><br><span class="line">        <span class="comment">// not DiagonalPoints</span></span><br><span class="line">        <span class="keyword">return</span> []</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> y2&gt;y1?[x1,y1]:[x1,y2]</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>该方法会先计算根据两点的x值大小，取得左端点和右端点的x,y值，若两点x或y值任一相同，则入参两点为同一边上的端点，不能用作确定矩形<br>若为对角点，则再根据y值对比，返回左上的起始点坐标</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> width = <span class="title class_">Math</span>.<span class="title function_">abs</span>(label.<span class="property">beginX</span> - label.<span class="property">endX</span>) *scale</span><br><span class="line"><span class="keyword">const</span> height = <span class="title class_">Math</span>.<span class="title function_">abs</span>(label.<span class="property">beginY</span> - label.<span class="property">endY</span>) *scale</span><br><span class="line"><span class="keyword">const</span> [x,y] = <span class="title function_">countRectStartPointByDiagonalPoints</span>(</span><br><span class="line">    [label.<span class="property">beginX</span>,label.<span class="property">beginY</span>],</span><br><span class="line">    [label.<span class="property">endX</span>,label.<span class="property">endY</span>]</span><br><span class="line">)</span><br><span class="line"><span class="keyword">if</span>(x&amp;&amp;y)&#123;</span><br><span class="line">    graph = <span class="variable language_">this</span>.<span class="property">camvas</span>.<span class="title function_">rect</span>(width/<span class="variable language_">this</span>.<span class="property">bitScale</span>,height/<span class="variable language_">this</span>.<span class="property">bitScale</span>).<span class="title function_">attr</span>(&#123;x,y&#125;)</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<h2 id="最终效果"><a href="#最终效果" class="headerlink" title="最终效果"></a>最终效果</h2><p>这个改动，仅用在标注平台上的标注组件，因为其数据处理只能用在标注平台的这种描述端点的数据结构上。<br>此外，多边形不存在这个问题，因为多边形是通过完整的点集描述的闭合路径转换的 。<br><img src="https://s3.bmp.ovh/imgs/2022/04/06/ad568692cee1c608.png" alt="最终效果" title="最终效果"></p>
 
     </div>
 
@@ -266,12 +271,12 @@
         
     <div class="post-nav">
       <div class="post-nav-item">
-    <a href="/2022/03/31/localhost-loopback-md/" rel="prev" title="0.0.0.0 & 127.0.0.1 & 本机IP的差别">
-      <i class="fa fa-chevron-left"></i> 0.0.0.0 & 127.0.0.1 & 本机IP的差别
+    <a href="/2021/10/12/labelimage-demo/" rel="prev" title="数据集标注用标注组件的实现">
+      <i class="fa fa-chevron-left"></i> 数据集标注用标注组件的实现
     </a></div>
       <div class="post-nav-item">
-    <a href="/2022/04/05/todo-list/" rel="next" title="待迁移的技术博客">
-      待迁移的技术博客 <i class="fa fa-chevron-right"></i>
+    <a href="/2022/02/06/hello-world/" rel="next" title="Hello World">
+      Hello World <i class="fa fa-chevron-right"></i>
     </a></div>
     </div>
       </footer>
@@ -332,6 +337,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%97%AE%E9%A2%98%E5%88%86%E6%9E%90"><span class="nav-number">1.</span> <span class="nav-text">问题分析</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%97%AE%E9%A2%98%E5%A4%84%E7%90%86"><span class="nav-number">2.</span> <span class="nav-text">问题处理</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%9C%80%E7%BB%88%E6%95%88%E6%9E%9C"><span class="nav-number">3.</span> <span class="nav-text">最终效果</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 
@@ -347,7 +353,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">18</span>
+          <span class="site-state-item-count">20</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -401,13 +407,13 @@
       <i class="fa fa-chart-area"></i>
     </span>
       <span class="post-meta-item-text">站点总字数：</span>
-    <span title="站点总字数">23k</span>
+    <span title="站点总字数">36k</span>
     <span class="post-meta-divider">|</span>
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
       <span class="post-meta-item-text">站点阅读时长 &asymp;</span>
-    <span title="站点阅读时长">39 分钟</span>
+    <span title="站点阅读时长">1:01</span>
 </div>
   <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
   </div>
