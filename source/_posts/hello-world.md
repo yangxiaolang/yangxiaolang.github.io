@@ -1,41 +1,10 @@
 ---
-title: Hello World
+title: 第一篇博客 Hello World
 date: 2022-02-06 10:31:11
-updated: 2022-02-06 10:31:11
+updated: 2022-04-07 22:29:00
 ---
 
-Welcome to [Hexo](https://hexo.io/)! This is your very first post. Check [documentation](https://hexo.io/docs/) for more info. If you get any problems when using Hexo, you can find the answer in [troubleshooting](https://hexo.io/docs/troubleshooting.html) or you can ask me on [GitHub](https://github.com/hexojs/hexo/issues).
-
-## Quick Start
-
-### Create a new post
-
-```bash
-$ hexo new "My New Post"
-```
-
-More info: [Writing](https://hexo.io/docs/writing.html)
-
-### Run server
-
-```bash
-$ hexo server
-```
-
-More info: [Server](https://hexo.io/docs/server.html)
-
-### Generate static files
-
-```bash
-$ hexo generate
-```
-
-More info: [Generating](https://hexo.io/docs/generating.html)
-
-### Deploy to remote sites
-
-```bash
-$ hexo deploy
-```
-
-More info: [Deployment](https://hexo.io/docs/one-command-deployment.html)
+其实老早就想攒一个博客了，以前连域名云服务器都准备好了，还想着自己开发前后端，差生文具多了属于是。
+这下好了，域名都过期了，人也懒了没时间从头到尾搞了，直接hexo一把梭吧，慢慢来，先有内容再有别的，博客主要也是写一些分享，开发博客本身倒是次要的。
+这篇应该才是这个博客网站的第一篇博客，之前都是发在内部网站的，筛出来一些个人感觉有价值的学习分享总结迁了过来，基本上都过滤了一边,算是基本迁完了。
+慢慢养成习惯吧，学习调研内容先用MD写放这里，然后再发到内部，内部的富文本编辑器一言难尽，MD的显示样式也一样难尽...
